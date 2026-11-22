@@ -207,6 +207,11 @@ function drawScene(cv: Canvas): void {
   cv.ellipse(e1x + 18, e1y + 108, 26, 46, YOLK_MID);
   cv.disc(e1x + 18, e1y + 148, 26, YOLK_MID);
   cv.disc(e1x + 10, e1y + 146, 10, YOLK_HI);
+  // glossy specular highlight on the drip: a bright ellipse on its flank
+  cv.ellipse(e1x + 6, e1y + 118, 7, 22, [255, 240, 186]);
+  cv.ellipse(e1x + 6, e1y + 118, 3, 10, [255, 250, 222]);
+  // stronger warm rim light along the top edge of the white
+  cv.ellipse(e1x - 18, e1y - 108, 96, 16, [255, 246, 226]);
 
   // ---- egg half 2 (right), slightly higher, overlapping ----
   const e2x = 620;
@@ -240,10 +245,13 @@ function drawScene(cv: Canvas): void {
   for (const [sx, sy] of steamTops) {
     let px0 = sx;
     let py0 = sy + 60;
-    for (let k = 1; k <= 8; k++) {
+    for (let k = 1; k <= 11; k++) {
       const px1 = sx + Math.sin(k * 0.9) * 14;
       const py1 = sy + 60 - k * 14;
-      cv.line(px0, py0, px1, py1, STEAM, 4);
+      // taper the wisp as it rises: thick at the base, thin and faint at top
+      const thick = k <= 5 ? 4 : k <= 8 ? 3 : 2;
+      const shade: RGB = k <= 5 ? STEAM : k <= 8 ? [214, 198, 180] : [232, 220, 204];
+      cv.line(px0, py0, px1, py1, shade, thick);
       px0 = px1;
       py0 = py1;
     }
